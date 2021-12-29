@@ -15,7 +15,7 @@ namespace FilmesAPI.Controllers
         public void AdicionarFilme([FromBody] Filme filme)
         {
             _filmes.Add(filme);
-            Console.WriteLine(filme);
+            Console.WriteLine(filme.Titulo);
         }
 
         [HttpGet]
