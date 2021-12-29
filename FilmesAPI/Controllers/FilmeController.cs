@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FilmesAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +10,14 @@ namespace FilmesAPI.Controllers
     public class FilmeController : ControllerBase
     {
         private static List<Filme> _filmes = new List<Filme>();
-        private static int id = 1;
+        private static int _id = 1;
 
         [HttpPost]
-        public void AdicionarFilme([FromBody] Filme filme)
+        public IActionResult AdicionarFilme([FromBody] Filme filme)
         {
-            filme.Id = id++;
+            filme.Id = _id++;
             _filmes.Add(filme);
-            Console.WriteLine($"Filme {filme.Titulo} cadastrado");
+            return CreatedAtAction(nameof(RecuperarFilmePorId), new { Id = filme.Id}, filme);
         }
 
         [HttpGet]
@@ -28,9 +27,14 @@ namespace FilmesAPI.Controllers
         }
         
         [HttpGet("{id}")]
-        public Filme RecuperarFilmePorId(int id)
+        public IActionResult RecuperarFilmePorId(int id)
         {
-            return _filmes.FirstOrDefault(filme => filme.Id == id);
+            Filme filme = _filmes.FirstOrDefault(filme => filme.Id == id);
+            if (filme != null)
+            {
+                Ok(filme);
+            }
+            return NotFound();
         }
     }
 }
