@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FilmesAPI.Data;
+using FilmesAPI.Data.DTOs;
 using FilmesAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +19,15 @@ namespace FilmesAPI.Controllers
         }
         
         [HttpPost]
-        public IActionResult AdicionarFilme([FromBody] Filme filme)
+        public IActionResult AdicionarFilme([FromBody] FilmeDto filmeDto)
         {
+            Filme filme = new Filme
+            {
+                Titulo = filmeDto.Titulo,
+                Genero = filmeDto.Genero,
+                Duracao = filmeDto.Duracao,
+                Diretor = filmeDto.Diretor
+            };
             _context.Filmes.Add(filme);
             _context.SaveChanges();
             return CreatedAtAction(nameof(RecuperarFilmePorId), new { Id = filme.Id}, filme);
@@ -43,17 +51,17 @@ namespace FilmesAPI.Controllers
         }
         
         [HttpPut("{id}")]
-        public IActionResult AtualizarFilme(int id, [FromBody] Filme filmeNovo)
+        public IActionResult AtualizarFilme(int id, [FromBody] FilmeDto filmeDto)
         {
             Filme filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
             if (filme == null)
             {
                 return NotFound();
             }
-            filme.Titulo = filmeNovo.Titulo;
-            filme.Genero = filmeNovo.Genero;
-            filme.Duracao = filmeNovo.Duracao;
-            filme.Diretor = filmeNovo.Diretor;
+            filme.Titulo = filmeDto.Titulo;
+            filme.Genero = filmeDto.Genero;
+            filme.Duracao = filmeDto.Duracao;
+            filme.Diretor = filmeDto.Diretor;
             _context.SaveChanges();
             return NoContent();
         }
