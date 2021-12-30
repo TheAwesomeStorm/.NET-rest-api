@@ -4,6 +4,7 @@ namespace FilmesAPI.Models
 {
     public class Filme
     {
+        [Key][Required]
         public int Id { get; internal set; }
         [Required]
         public string Titulo { get; set; }
