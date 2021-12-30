@@ -30,6 +30,8 @@ D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\FilmesAPI.runtim
 D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\FilmesAPI.dll
 D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\ref\FilmesAPI.dll
 D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\FilmesAPI.pdb
+D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\AutoMapper.dll
+D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\BouncyCastle.Crypto.dll
 D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\Google.Protobuf.dll
 D:\Projects\Rider Projects\FilmesAPI\FilmesAPI\bin\Debug\net5.0\Humanizer.dll
