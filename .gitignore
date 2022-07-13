@@ -1,6 +1,5 @@
 .vs
 .idea
-bin/
-obj/
-FilmesApi/bin/
-Filmes/obj/
+FilmesAPI/bin/
+FilmesAPI/obj/
+FilmesAPI/Migrations/
