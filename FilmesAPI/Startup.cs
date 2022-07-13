@@ -23,7 +23,7 @@ namespace FilmesAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<FilmeContext>(options => options.UseMySQL(Configuration.GetConnectionString("FilmeConnection")));
+            services.AddDbContext<AppDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("FilmeConnection")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
