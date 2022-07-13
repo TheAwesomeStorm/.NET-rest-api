@@ -1,2 +1,6 @@
 .vs
 .idea
+bin/
+obj/
+FilmesApi/bin/
+Filmes/obj/
