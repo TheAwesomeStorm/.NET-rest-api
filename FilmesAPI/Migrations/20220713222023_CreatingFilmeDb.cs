@@ -3,7 +3,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace FilmesAPI.Migrations
 {
-    public partial class RelacaoCinemaEndereco : Migration
+    public partial class CreatingFilmeDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,13 +23,43 @@ namespace FilmesAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Filmes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Titulo = table.Column<string>(type: "text", nullable: false),
+                    Diretor = table.Column<string>(type: "text", nullable: false),
+                    Genero = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    Duracao = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Filmes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Gerentes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Gerentes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Cinemas",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(type: "text", nullable: false),
-                    EnderecoId = table.Column<int>(type: "int", nullable: false)
+                    EnderecoId = table.Column<int>(type: "int", nullable: false),
+                    GerenteId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,6 +70,12 @@ namespace FilmesAPI.Migrations
                         principalTable: "Enderecos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cinemas_Gerentes_GerenteId",
+                        column: x => x.GerenteId,
+                        principalTable: "Gerentes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -47,6 +83,11 @@ namespace FilmesAPI.Migrations
                 table: "Cinemas",
                 column: "EnderecoId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cinemas_GerenteId",
+                table: "Cinemas",
+                column: "GerenteId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -55,7 +96,13 @@ namespace FilmesAPI.Migrations
                 name: "Cinemas");
 
             migrationBuilder.DropTable(
+                name: "Filmes");
+
+            migrationBuilder.DropTable(
                 name: "Enderecos");
+
+            migrationBuilder.DropTable(
+                name: "Gerentes");
         }
     }
 }
