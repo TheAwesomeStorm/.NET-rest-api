@@ -34,5 +34,14 @@ namespace UsuariosAPI.Controllers
             if (result.IsFailed) return Unauthorized(result.Errors);
             return Ok(result.Successes);
         }
+
+        [HttpPost]
+        [Route("logout")]
+        public IActionResult DeslogarUsuario()
+        {
+            Result result = _usuarioService.DeslogarUsuario();
+            if (result.IsFailed) return Unauthorized(result.Errors);
+            return Ok(result.Successes);
+        }
     }
 }

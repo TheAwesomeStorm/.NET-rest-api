@@ -49,5 +49,12 @@ namespace UsuariosAPI.Services
             
             return Result.Ok().WithSuccess(token.Value);
         }
+
+        public Result DeslogarUsuario()
+        {
+            Task result = _signInManager.SignOutAsync();
+            if (result.IsCompletedSuccessfully) return Result.Ok();
+            return Result.Fail("Logout falhou");
+        }
     }
 }
