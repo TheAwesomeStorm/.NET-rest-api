@@ -29,6 +29,7 @@ namespace UsuariosAPI
                 .UseMySQL(Configuration.GetConnectionString("UsuarioConnection")));
             services.AddIdentity<IdentityUser<int>, IdentityRole<int>>().AddEntityFrameworkStores<UserDbContext>();
             services.AddScoped<UsuarioService, UsuarioService>();
+            services.AddScoped<TokenService, TokenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
