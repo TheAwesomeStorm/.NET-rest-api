@@ -26,9 +26,9 @@ namespace UsuariosAPI.Controllers
             return Ok(result.Successes);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("confirmar")]
-        public IActionResult AtivarUsuario(ConfirmarEmailRequest request)
+        public IActionResult ConfirmarUsuario([FromQuery] ConfirmarEmailRequest request)
         {
             Result result = _usuarioService.ConfirmarEmail(request);
             if (result.IsFailed) return StatusCode(500);

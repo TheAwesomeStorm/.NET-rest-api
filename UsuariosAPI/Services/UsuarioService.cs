@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
@@ -15,17 +16,20 @@ namespace UsuariosAPI.Services
         private UserManager<IdentityUser<int>> _userManager;
         private SignInManager<IdentityUser<int>> _signInManager;
         private TokenService _tokenService;
+        private EmailService _emailService;
 
         public UsuarioService(
             IMapper mapper,
             UserManager<IdentityUser<int>> userManager,
             SignInManager<IdentityUser<int>> signInManager,
-            TokenService tokenService)
+            TokenService tokenService,
+            EmailService emailService)
         {
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
         public Result CadastrarUsuario(CreateUsuarioDto usuarioDto)
         {
@@ -36,6 +40,9 @@ namespace UsuariosAPI.Services
             if (!identityResult.Result.Succeeded) return Result.Fail("Falha ao cadastrar o usuário");
             
             string code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
+            string encodedCode = HttpUtility.UrlEncode(code);
+            _emailService.Enviar(new[] {usuarioIdentity.Email}, "Link de Ativação", usuarioIdentity.Id, encodedCode);
+
             return Result.Ok().WithSuccess(code);
         }
 

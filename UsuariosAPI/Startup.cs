@@ -33,6 +33,7 @@ namespace UsuariosAPI
                 .AddDefaultTokenProviders();
             services.AddScoped<UsuarioService, UsuarioService>();
             services.AddScoped<TokenService, TokenService>();
+            services.AddScoped<EmailService, EmailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
