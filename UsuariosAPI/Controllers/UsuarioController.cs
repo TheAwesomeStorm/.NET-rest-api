@@ -23,7 +23,16 @@ namespace UsuariosAPI.Controllers
         {
             Result result = _usuarioService.CadastrarUsuario(usuarioDto);
             if (result.IsFailed) return StatusCode(500);
-            return Ok();
+            return Ok(result.Successes);
+        }
+
+        [HttpPost]
+        [Route("confirmar")]
+        public IActionResult AtivarUsuario(ConfirmarEmailRequest request)
+        {
+            Result result = _usuarioService.ConfirmarEmail(request);
+            if (result.IsFailed) return StatusCode(500);
+            return Ok(result.Successes);
         }
 
         [HttpPost]

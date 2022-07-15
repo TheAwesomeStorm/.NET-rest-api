@@ -32,8 +32,21 @@ namespace UsuariosAPI.Services
             Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
             IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
             Task<IdentityResult> identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password);
-            if (identityResult.Result.Succeeded) return Result.Ok();
-            return Result.Fail("Falha ao cadastrar o usuário");
+            
+            if (!identityResult.Result.Succeeded) return Result.Fail("Falha ao cadastrar o usuário");
+            
+            string code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
+            return Result.Ok().WithSuccess(code);
+        }
+
+        public Result ConfirmarEmail(ConfirmarEmailRequest request)
+        {
+            IdentityUser<int> identityUser = _signInManager.UserManager.Users.FirstOrDefault(usuario =>
+                usuario.Id == request.UsuarioId);
+            IdentityResult identityResult =  _userManager.ConfirmEmailAsync(identityUser, request.CodigoDeAtivacao).Result;
+            
+            if (identityResult.Succeeded) return Result.Ok();
+            return Result.Fail("Falha ao confirmar email de usuario");
         }
 
         public Result LogarUsuário(LoginRequest request)
