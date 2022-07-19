@@ -38,12 +38,10 @@ namespace UsuariosAPI.Services
         {
             Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
             IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
-            Task<IdentityResult> identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password);
+            IdentityResult identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password).Result;
+            IdentityResult roleResult = _userManager.AddToRoleAsync(usuarioIdentity, "regular").Result;
 
-            IdentityResult createRoleResult = _roleManager.CreateAsync(new IdentityRole<int>("admin")).Result;
-            IdentityResult usuarioRoleResult = _userManager.AddToRoleAsync(usuarioIdentity, "admin").Result;
-            
-            if (!identityResult.Result.Succeeded) return Result.Fail("Falha ao cadastrar o usuário");
+            if (!identityResult.Succeeded || !roleResult.Succeeded) return Result.Fail("Falha ao cadastrar o usuário");
             
             string code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
             string encodedCode = HttpUtility.UrlEncode(code);
