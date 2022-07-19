@@ -52,5 +52,23 @@ namespace UsuariosAPI.Controllers
             if (result.IsFailed) return Unauthorized(result.Errors);
             return Ok(result.Successes);
         }
+
+        [HttpPost]
+        [Route("recover")]
+        public IActionResult RecuperarSenha(RecuperarSenhaRequest request)
+        {
+            Result result = _usuarioService.RecuperarSenha(request);
+            if (result.IsFailed) return Unauthorized(result.Errors);
+            return Ok(result.Successes);
+        }
+
+        [HttpPost]
+        [Route("reset")]
+        public IActionResult RecadastrarSenha(RecadastrarSenhaRequest request)
+        {
+            Result result = _usuarioService.RecadastrarSenha(request);
+            if (result.IsFailed) return Unauthorized(result.Errors);
+            return Ok(result.Successes);
+        }
     }
 }
