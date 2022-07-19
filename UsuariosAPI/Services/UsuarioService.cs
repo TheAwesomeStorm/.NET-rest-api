@@ -13,31 +13,28 @@ namespace UsuariosAPI.Services
     public class UsuarioService
     {
         private IMapper _mapper;
-        private UserManager<IdentityUser<int>> _userManager;
-        private SignInManager<IdentityUser<int>> _signInManager;
+        private UserManager<CustomIdentityUser> _userManager;
+        private SignInManager<CustomIdentityUser> _signInManager;
         private TokenService _tokenService;
         private EmailService _emailService;
-        private RoleManager<IdentityRole<int>> _roleManager;
 
         public UsuarioService(
             IMapper mapper,
-            UserManager<IdentityUser<int>> userManager,
-            SignInManager<IdentityUser<int>> signInManager,
+            UserManager<CustomIdentityUser> userManager,
+            SignInManager<CustomIdentityUser> signInManager,
             TokenService tokenService,
-            EmailService emailService,
-            RoleManager<IdentityRole<int>> roleManager)
+            EmailService emailService)
         {
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _emailService = emailService;
-            _roleManager = roleManager;
         }
         public Result CadastrarUsuario(CreateUsuarioDto usuarioDto)
         {
             Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
-            IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
+            CustomIdentityUser usuarioIdentity = _mapper.Map<CustomIdentityUser>(usuario);
             IdentityResult identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password).Result;
             IdentityResult roleResult = _userManager.AddToRoleAsync(usuarioIdentity, "regular").Result;
 
@@ -52,7 +49,7 @@ namespace UsuariosAPI.Services
 
         public Result ConfirmarEmail(ConfirmarEmailRequest request)
         {
-            IdentityUser<int> identityUser = _signInManager.UserManager.Users.FirstOrDefault(usuario =>
+            CustomIdentityUser identityUser = _signInManager.UserManager.Users.FirstOrDefault(usuario =>
                 usuario.Id == request.UsuarioId);
             IdentityResult identityResult =  _userManager.ConfirmEmailAsync(identityUser, request.CodigoDeAtivacao).Result;
             
@@ -67,7 +64,7 @@ namespace UsuariosAPI.Services
             
             if (!result.Result.Succeeded) return Result.Fail("Login falhou");
             
-            IdentityUser<int> identityUser = _signInManager.UserManager.Users.FirstOrDefault(usuario =>
+            CustomIdentityUser identityUser = _signInManager.UserManager.Users.FirstOrDefault(usuario =>
                 usuario.NormalizedUserName == request.Username.ToUpper());
             string role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
             Token token = _tokenService.CreateToken(identityUser, role);
@@ -84,7 +81,7 @@ namespace UsuariosAPI.Services
 
         public Result RecuperarSenha(RecuperarSenhaRequest request)
         {
-            IdentityUser<int> identityUser = RecuperarUsuarioPorEmail(request.Email);
+            CustomIdentityUser identityUser = RecuperarUsuarioPorEmail(request.Email);
             if (identityUser == null)
             {
                 return Result.Fail("Não foi encontrado um usuário associado ao e-mail informado.");
@@ -97,14 +94,14 @@ namespace UsuariosAPI.Services
 
         public Result RecadastrarSenha(RecadastrarSenhaRequest request)
         {
-            IdentityUser<int> identityUser = RecuperarUsuarioPorEmail(request.Email);
+            CustomIdentityUser identityUser = RecuperarUsuarioPorEmail(request.Email);
             IdentityResult resultadoIdentity = _signInManager.UserManager
                 .ResetPasswordAsync(identityUser, request.Token, request.Password).Result;
             if (resultadoIdentity.Succeeded) return Result.Ok().WithSuccess("Senha redefinida com sucesso.");
             return Result.Fail("Erro na operação.");
         }
         
-        private IdentityUser<int> RecuperarUsuarioPorEmail(string email)
+        private CustomIdentityUser RecuperarUsuarioPorEmail(string email)
         {
             return _signInManager.UserManager.Users.FirstOrDefault(user =>
                 user.NormalizedEmail == email.ToUpper());

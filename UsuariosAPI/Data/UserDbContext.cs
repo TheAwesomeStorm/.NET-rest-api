@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using UsuariosAPI.Models;
 
 namespace UsuariosAPI.Data
 {
-    public class UserDbContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
+    public class UserDbContext : IdentityDbContext<CustomIdentityUser, IdentityRole<int>, int>
     {
         private IConfiguration _configuration;
         public UserDbContext(DbContextOptions<UserDbContext> options, IConfiguration configuration) : base(options)
@@ -18,7 +19,7 @@ namespace UsuariosAPI.Data
         {
             base.OnModelCreating(builder);
 
-            IdentityUser<int> admin = new IdentityUser<int>
+            CustomIdentityUser admin = new CustomIdentityUser
             {
                 UserName = "admin",
                 NormalizedUserName = "ADMIN",
@@ -29,10 +30,10 @@ namespace UsuariosAPI.Data
                 Id = 999
             };
 
-            PasswordHasher<IdentityUser<int>> hasher = new PasswordHasher<IdentityUser<int>>();
+            PasswordHasher<CustomIdentityUser> hasher = new PasswordHasher<CustomIdentityUser>();
             string passwordFromSecret = _configuration.GetValue<string>("AdminInformation:Password");
             admin.PasswordHash = hasher.HashPassword(admin, passwordFromSecret);
-            builder.Entity<IdentityUser<int>>().HasData(admin);
+            builder.Entity<CustomIdentityUser>().HasData(admin);
             builder.Entity<IdentityRole<int>>().HasData(new IdentityRole<int>
             {
                 Id = 999,
