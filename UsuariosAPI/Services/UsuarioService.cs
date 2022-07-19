@@ -17,25 +17,31 @@ namespace UsuariosAPI.Services
         private SignInManager<IdentityUser<int>> _signInManager;
         private TokenService _tokenService;
         private EmailService _emailService;
+        private RoleManager<IdentityRole<int>> _roleManager;
 
         public UsuarioService(
             IMapper mapper,
             UserManager<IdentityUser<int>> userManager,
             SignInManager<IdentityUser<int>> signInManager,
             TokenService tokenService,
-            EmailService emailService)
+            EmailService emailService,
+            RoleManager<IdentityRole<int>> roleManager)
         {
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenService = tokenService;
             _emailService = emailService;
+            _roleManager = roleManager;
         }
         public Result CadastrarUsuario(CreateUsuarioDto usuarioDto)
         {
             Usuario usuario = _mapper.Map<Usuario>(usuarioDto);
             IdentityUser<int> usuarioIdentity = _mapper.Map<IdentityUser<int>>(usuario);
             Task<IdentityResult> identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password);
+
+            IdentityResult createRoleResult = _roleManager.CreateAsync(new IdentityRole<int>("admin")).Result;
+            IdentityResult usuarioRoleResult = _userManager.AddToRoleAsync(usuarioIdentity, "admin").Result;
             
             if (!identityResult.Result.Succeeded) return Result.Fail("Falha ao cadastrar o usuário");
             
@@ -65,7 +71,8 @@ namespace UsuariosAPI.Services
             
             IdentityUser<int> identityUser = _signInManager.UserManager.Users.FirstOrDefault(usuario =>
                 usuario.NormalizedUserName == request.Username.ToUpper());
-            Token token = _tokenService.CreateToken(identityUser);
+            string role = _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault();
+            Token token = _tokenService.CreateToken(identityUser, role);
             
             return Result.Ok().WithSuccess(token.Value);
         }
