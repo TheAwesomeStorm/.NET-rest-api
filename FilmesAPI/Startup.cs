@@ -1,8 +1,10 @@
 using System;
 using System.Text;
+using FilmesAPI.Authorization;
 using FilmesAPI.Data;
 using FilmesAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -45,6 +47,15 @@ namespace FilmesAPI
                         ClockSkew = TimeSpan.Zero
                     };
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IdadeMinima", policy =>
+                {
+                    policy.Requirements.Add(new IdadeMinimaRequirement(18));
+                });
+            });
+            services.AddSingleton<IAuthorizationHandler, IdadeMinimaHandler>();
+            
             services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseMySQL(Configuration.GetConnectionString("FilmeConnection")).UseLazyLoadingProxies());
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

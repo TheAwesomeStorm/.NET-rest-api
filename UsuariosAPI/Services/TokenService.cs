@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -16,7 +17,8 @@ namespace UsuariosAPI.Services
             Claim[] userRights = {
                 new Claim("username", usuario.UserName),
                 new Claim("id", usuario.Id.ToString()),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.DateOfBirth, usuario.DataNascimento.ToString())
             };
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(
